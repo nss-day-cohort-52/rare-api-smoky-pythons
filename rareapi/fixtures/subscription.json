@@ -1,0 +1,12 @@
+[
+    {
+        "model": "rareapi.category",
+        "pk": 1,
+        "fields": {
+            "follower_id": 2,
+            "author_id": 1,
+            "created_on": "2022-02-15",
+            "ended_on": "2022-02-20"
+        }
+    }
+]
