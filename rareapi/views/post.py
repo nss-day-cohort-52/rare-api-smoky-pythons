@@ -2,23 +2,23 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.serializers import ModelSerializer
-from rareapi.models import RareUser
+from rareapi.models import Post
 
 
-class RareUserView(ViewSet):
+class PostView(ViewSet):
     def list(self, request):
-        rare_users = RareUser.objects.all()
-        serializer = RareUserSerializer(rare_users, many=True)
+        posts = Post.objects.all()
+        serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, pk):
-        rare_user = RareUser.objects.get(pk=pk)
-        serializer = RareUserSerializer(rare_user)
+        post = Post.objects.get(pk=pk)
+        serializer = PostSerializer(post)
         return Response(serializer.data)
 
 
-class RareUserSerializer(ModelSerializer):
+class PostSerializer(ModelSerializer):
     class Meta:
-        model = RareUser
+        model = Post
         fields = "__all__"
         depth = 1
