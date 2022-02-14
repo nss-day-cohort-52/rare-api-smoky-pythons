@@ -1,6 +1,6 @@
 [
     {
-        "model": "rareapi.category",
+        "model": "rareapi.subscription",
         "pk": 1,
         "fields": {
             "follower_id": 2,

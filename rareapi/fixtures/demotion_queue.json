@@ -1,6 +1,6 @@
 [
     {
-        "model": "rareapi.category",
+        "model": "rareapi.demotion_queue",
         "pk": 1,
         "fields": {
             "action": "unsure",
