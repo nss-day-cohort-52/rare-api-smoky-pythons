@@ -4,3 +4,7 @@ from .rare_user import RareUser
 from .post import Post
 from .reaction import Reaction
 from .post_reaction import PostReaction
+from .category import Category
+from .comment import Comment
+from .demotion_queue import DemotionQueue
+from .subscribe import Subscription
