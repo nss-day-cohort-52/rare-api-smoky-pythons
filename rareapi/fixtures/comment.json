@@ -4,8 +4,8 @@
         "pk": 1,
         "fields": {
             "post_id": 1,
-            "author_id": 1,
-            "content": "this is the content pf this comment",
+            "author_id": 2,
+            "content": "this is the content of this comment",
             "created_on":"2022-02-02"
         }
     }

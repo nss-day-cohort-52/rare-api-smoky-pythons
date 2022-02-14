@@ -18,7 +18,6 @@ class DemotionQueueView(ViewSet):
         
     def list(self, request):
         demotionQueues=DemotionQueue.objects.all()
-        game_type = request.query_params.get('type', None)
      
         serializer = DemotionQueueSerializer(demotionQueues, many=True)
         return Response(serializer.data)
