@@ -1,0 +1,38 @@
+[
+    {
+        "model": "rareapi.post",
+        "pk": 1,
+        "fields": {
+            "user": 2,
+            "category": 1,
+            "title": "Seed Data",
+            "image_url": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2F22BvozziAOo%2Fmaxresdefault.jpg&f=1&nofb=1",
+            "content": "YO THIS IS SOME SEED DATA, MY GUY",
+            "approved": true
+        }
+    },
+    {
+        "model": "rareapi.post",
+        "pk": 2,
+        "fields": {
+            "user": 2,
+            "category": 2,
+            "title": "MOR SEED DATA",
+            "image_url": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ff0%2F0d%2Fae%2Ff00dae40fa38727e2ab1eaa4760f2e6c.jpg&f=1&nofb=1",
+            "content": "YO THIS IS SOME MOR SEED DATA, MY GUY",
+            "approved": true
+        }
+    },
+    {
+        "model": "rareapi.post",
+        "pk": 3,
+        "fields": {
+            "user": 2,
+            "category": 2,
+            "title": "MOR SEED DATA",
+            "image_url": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ff0%2F0d%2Fae%2Ff00dae40fa38727e2ab1eaa4760f2e6c.jpg&f=1&nofb=1",
+            "content": "YO THIS IS SOME MOR SEED DATA, MY GUY",
+            "approved": true
+        }
+    }
+]
