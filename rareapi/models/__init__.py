@@ -7,4 +7,4 @@ from .post_reaction import PostReaction
 from .category import Category
 from .comment import Comment
 from .demotion_queue import DemotionQueue
-from .subscribe import Subscription
+from .subscription import Subscription
