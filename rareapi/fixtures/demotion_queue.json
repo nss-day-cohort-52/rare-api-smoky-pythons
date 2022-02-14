@@ -1,0 +1,11 @@
+[
+    {
+        "model": "rareapi.category",
+        "pk": 1,
+        "fields": {
+            "action": "unsure",
+            "admin_id": 1,
+            "approver_one_id": 1
+        }
+    }
+]
