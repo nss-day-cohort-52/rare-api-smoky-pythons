@@ -1,11 +1,11 @@
 [
     {
-        "model": "rareapi.category",
+        "model": "rareapi.demotionqueue",
         "pk": 1,
         "fields": {
             "action": "unsure",
-            "admin_id": 1,
-            "approver_one_id": 1
+            "admin_id": 2,
+            "approver_one_id": 3
         }
     }
 ]
