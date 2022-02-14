@@ -24,7 +24,7 @@ from rareapi.views.reaction import ReactionView
 from rareapi.views.tag import TagView
 from rest_framework import routers
 from django.conf.urls import include
-from levelupapi.views import register_user, login_user
+from rareapi.views import register_user, login_user
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'rareusers', RareUserView, 'rareuser')

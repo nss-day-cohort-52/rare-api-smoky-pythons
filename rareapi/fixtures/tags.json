@@ -1,6 +1,6 @@
 [
     {
-        "model": "rareapi.tags",
+        "model": "rareapi.tag",
         "pk": 1,
         "fields": {
             "label": "SuperDuppperrrrrrr"
