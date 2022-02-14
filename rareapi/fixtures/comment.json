@@ -1,6 +1,6 @@
 [
     {
-        "model": "rareapi.category",
+        "model": "rareapi.comment",
         "pk": 1,
         "fields": {
             "post_id": 1,
