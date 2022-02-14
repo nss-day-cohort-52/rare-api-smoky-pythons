@@ -18,8 +18,19 @@ from django.urls import path
 from django.conf.urls import include
 from rest_framework import routers
 from rareapi.views import register_user, login_user
+from rareapi.views.post import PostView
+from rareapi.views.rare_user import RareUserView
+from rareapi.views.reaction import ReactionView
+from rareapi.views.tag import TagView
+from rest_framework import routers
+from django.conf.urls import include
+from levelupapi.views import register_user, login_user
 
 router = routers.DefaultRouter(trailing_slash=False)
+router.register(r'rareusers', RareUserView, 'rareuser')
+router.register(r'tags', TagView, 'tag')
+router.register(r'posts', PostView, 'post')
+router.register(r'reactions', ReactionView, 'reaction')
 
 urlpatterns = [
     path('register', register_user),
