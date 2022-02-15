@@ -12,17 +12,17 @@ class PostView(ViewSet):
         for post in posts:
             post.is_owner = post.user_id == request.auth.user_id
             
-        serializer = PostSerializer(posts, many=True)
+        serializer = GetPostSerializer(posts, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, pk):
         post = Post.objects.get(pk=pk)
         post.is_owner = post.user == request.auth.user
-        serializer = PostSerializer(post)
+        serializer = GetPostSerializer(post)
         return Response(serializer.data)
 
 
-class PostSerializer(ModelSerializer):
+class GetPostSerializer(ModelSerializer):
     class Meta:
         model = Post
         fields = ('id', 'user', 'category', 'title', 'publication_date', 
