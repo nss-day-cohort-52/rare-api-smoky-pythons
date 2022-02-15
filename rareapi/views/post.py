@@ -6,6 +6,7 @@ from rareapi.models import Post
 
 
 class PostView(ViewSet):
+    # Need to add a custom is_owner property to all posts
     def list(self, request):
         posts = Post.objects.all()
         serializer = PostSerializer(posts, many=True)
