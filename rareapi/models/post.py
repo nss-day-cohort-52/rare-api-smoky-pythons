@@ -1,4 +1,7 @@
 from django.db import models
+from rareapi.models.reaction import Reaction
+
+from rareapi.models.post_reaction import PostReaction
 
 
 class Post(models.Model):
@@ -21,3 +24,16 @@ class Post(models.Model):
     @is_owner.setter
     def is_owner(self, value):
         self.__is_owner = value
+        
+    @property   
+    def reactions(self):
+        array = []
+        post_reactions = PostReaction.objects.filter(post=self)
+        reactions = Reaction.objects.all()
+        for reaction in reactions:
+            array.append({
+                "label": reaction.label,
+                "count": len(post_reactions.filter(reaction=reaction))
+            })
+        return array
+        
