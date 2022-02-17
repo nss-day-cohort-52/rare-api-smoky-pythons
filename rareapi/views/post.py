@@ -5,14 +5,17 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.serializers import ModelSerializer
 from rareapi.models import Post, RareUser, Tag, Category
+from rareapi.models.subscription import Subscription
 
 
 class PostView(ViewSet):
     # Need to add a custom is_owner property to all posts
     def list(self, request):
         posts = Post.objects.all()
+        user = RareUser.objects.get(user=request.auth.user)
         for post in posts:
-            post.is_owner = post.user_id == request.auth.user_id
+            post.is_owner = post.user == user
+            post.subscribed = post in Subscription.objects.filter(follower=post.user, author=user)
 
         serializer = GetPostSerializer(posts, many=True)
         return Response(serializer.data)
@@ -61,7 +64,7 @@ class GetPostSerializer(ModelSerializer):
     class Meta:
         model = Post
         fields = ('id', 'user', 'category', 'title', 'publication_date',
-                  'image_url', 'content', 'approved', 'tags', 'is_owner')
+                  'image_url', 'content', 'approved', 'tags', 'is_owner', 'subscribed')
         depth = 2
 
 

@@ -4,7 +4,8 @@ from rest_framework.decorators import action
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers, status
-from rareapi.models import Subscription
+from rareapi.models import Subscription, RareUser
+
 
 
 class SubscriptionView(ViewSet):
@@ -19,15 +20,16 @@ class SubscriptionView(ViewSet):
 
     def list(self, request):
         subscriptions = Subscription.objects.all()
-
-        author_query = request.query_params.get('author', None)
-
-        if author_query is not None:
-            subscriptions = Subscription.objects.filter(author=author_query)
-
         serializer = SubscriptionSerializer(subscriptions, many=True)
         return Response(serializer.data)
 
+
+    @action(methods=['get'], detail=False)
+    def currentuser(self, request):
+        user = RareUser.objects.get(user=request.auth.user)  
+        subs = Subscription.objects.filter(author=user)
+        serializer = SubscriptionSerializer(subs, many=True)
+        return Response(serializer.data)
 
 class SubscriptionSerializer(serializers.ModelSerializer):
 

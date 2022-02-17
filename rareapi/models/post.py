@@ -21,3 +21,11 @@ class Post(models.Model):
     @is_owner.setter
     def is_owner(self, value):
         self.__is_owner = value
+
+    @property
+    def subscribed(self):
+        return self.__subscribed
+
+    @subscribed.setter
+    def subscribed(self, value):
+        self.__subscribed = value

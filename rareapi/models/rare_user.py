@@ -8,3 +8,5 @@ class RareUser(models.Model):
     created_on = models.DateField(auto_now_add=True)
     active = models.BooleanField()
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="rare_user_user")
+
+
