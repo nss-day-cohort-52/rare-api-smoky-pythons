@@ -1,10 +1,12 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAdminUser
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rareapi.models import RareUser
+
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -21,19 +23,33 @@ def login_user(request):
     # authenticate returns the user object or None if no user is found
     authenticated_user = authenticate(username=username, password=password)
 
+    what_is_this = IsAdminUser()
+    print(what_is_this)
+
     # If authentication was successful, respond with their token
     if authenticated_user is not None:
         token = Token.objects.get(user=authenticated_user)
-        data = {
-            'valid': True,
-            'token': token.key,
-            'userId': authenticated_user.id
-        }
-        return Response(data)
+        if authenticated_user.is_staff:
+            data = {
+                'valid': True,
+                'is_staff': True,
+                'token': token.key,
+                'userId': authenticated_user.id
+            }
+            return Response(data)
+        else:
+            data = {
+                'valid': True,
+                'is_staff': False,
+                'token': token.key,
+                'userId': authenticated_user.id
+            }
+            return Response(data)
     else:
         # Bad login details were provided. So we can't log the user in.
-        data = { 'valid': False }
+        data = {'valid': False}
         return Response(data)
+
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -63,5 +79,5 @@ def register_user(request):
     # Use the REST Framework's token generator on the new user account
     token = Token.objects.create(user=rare_user.user)
     # Return the token to the client
-    data = { 'token': token.key, 'userId': rare_user.user.id}
+    data = {'token': token.key, 'userId': rare_user.user.id}
     return Response(data)

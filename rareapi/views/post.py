@@ -24,7 +24,8 @@ class PostView(ViewSet):
         return Response(serializer.data)
 
     def create(self, request):
-        user = RareUser.objects.get(pk=request.auth.user_id)
+        user = RareUser.objects.get(user=request.auth.user)
+        category = Category.objects.get(pk=request.data['category'])
         tags = []
 
         for tag_id in request.data['tags']:
@@ -32,8 +33,8 @@ class PostView(ViewSet):
             tags.append(tag)
 
         serializer = CreatePostSerializer(data=request.data)
-        serializer.is_valid()
-        post_obj = serializer.save(user=user)
+        serializer.is_valid(raise_exception=True)
+        post_obj = serializer.save(user=user, category=category)
         post_obj.tags.set(tags)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -41,7 +42,7 @@ class PostView(ViewSet):
         tags = []
         post = Post.objects.get(pk=pk)
         category = Category.objects.get(pk=request.data['category']['id'])
-        
+
         post.category = category
         post.title = request.data['title']
         post.image_url = request.data['image_url']
@@ -54,6 +55,11 @@ class PostView(ViewSet):
         post.tags.set(tags)
 
         post.save()
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
+
+    def destroy(self, request, pk):
+        post = Post.objects.get(pk=pk)
+        post.delete()
         return Response(None, status=status.HTTP_204_NO_CONTENT)
 
 
