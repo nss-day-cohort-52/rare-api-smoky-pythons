@@ -4,27 +4,54 @@ from rest_framework.decorators import action
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers, status
-from rareapi.models import Comment
+from rareapi.models import Comment, Post, RareUser
+
 
 class CommentView(ViewSet):
-#match pk that comes from url
+    # match pk that comes from url
     def retrieve(self, request, pk):
         try:
-            comment= Comment.objects.get(pk=pk)
-            serializer= CommentSerializer(comment)
+            comment = Comment.objects.get(pk=pk)
+            serializer = GetCommentSerializer(comment)
             return Response(serializer.data)
-        except  Comment.DoesNotExist as ex:
-            return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND) 
-        
-    def list(self, request):
-        comments=Comment.objects.all()
-    
-        serializer = CommentSerializer(comments, many=True)
-        return Response(serializer.data)
-    
-class CommentSerializer(serializers.ModelSerializer):
+        except Comment.DoesNotExist as ex:
+            return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
 
+    def list(self, request):
+        comments = Comment.objects.all()
+
+        serializer = GetCommentSerializer(comments, many=True)
+        return Response(serializer.data)
+
+    def create(self, request):
+        post = Post.objects.get(pk=request.data['post'])
+        rare_user = RareUser.objects.get(user_id=request.auth.user_id)
+
+        serializer = CreateCommentSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(author=rare_user, post=post)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, pk):
+        comment = Comment.objects.get(pk=pk)
+        comment.content = request.data['content']
+        comment.save()
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
+
+    def destroy(self, request, pk):
+        comment = Comment.objects.get(pk=pk)
+        comment.delete()
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
+
+
+class GetCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields ='__all__'
-        depth = 1
+        fields = '__all__'
+        depth = 2
+
+
+class CreateCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('content', 'post_id')
