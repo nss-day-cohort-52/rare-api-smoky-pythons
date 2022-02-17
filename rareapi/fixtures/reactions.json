@@ -1,0 +1,42 @@
+[
+    {
+        "model": "rareapi.reaction",
+        "pk": 1,
+        "fields": {
+            "label": "humor",
+            "image_url": "https://img.icons8.com/windows/344/laugh-squint.png"
+        }
+    },
+    {
+        "model": "rareapi.reaction",
+        "pk": 2,
+        "fields": {
+            "label": "like",
+            "image_url": "https://img.icons8.com/material-outlined/344/thumb-up.png"
+        }
+    },
+    {
+        "model": "rareapi.reaction",
+        "pk": 3,
+        "fields": {
+            "label": "sad",
+            "image_url": "https://img.icons8.com/ios-glyphs/344/sad.png"
+        }
+    },
+    {
+        "model": "rareapi.reaction",
+        "pk": 4,
+        "fields": {
+            "label": "care",
+            "image_url": "https://img.icons8.com/external-tulpahn-basic-outline-tulpahn/344/external-care-healthcare-tulpahn-basic-outline-tulpahn.png"
+        }
+    },
+    {
+        "model": "rareapi.reaction",
+        "pk": 5,
+        "fields": {
+            "label": "angry",
+            "image_url": "https://img.icons8.com/ios-glyphs/344/angry.png"
+        }
+    }
+]
