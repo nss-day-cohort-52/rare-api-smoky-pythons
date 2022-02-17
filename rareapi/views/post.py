@@ -24,7 +24,7 @@ class PostView(ViewSet):
         return Response(serializer.data)
 
     def create(self, request):
-        user = RareUser.objects.get(pk=request.auth.user_id)
+        user = RareUser.objects.get(user_id=request.auth.user_id)
         tags = []
 
         for tag_id in request.data['tags']:
@@ -32,7 +32,7 @@ class PostView(ViewSet):
             tags.append(tag)
 
         serializer = CreatePostSerializer(data=request.data)
-        serializer.is_valid()
+        serializer.is_valid(raise_exception=True)
         post_obj = serializer.save(user=user)
         post_obj.tags.set(tags)
         return Response(serializer.data, status=status.HTTP_201_CREATED)

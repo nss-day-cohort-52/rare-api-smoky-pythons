@@ -27,6 +27,7 @@ def login_user(request):
         data = {
             'valid': True,
             'token': token.key,
+            "is_staff": authenticated_user.is_staff,
             'userId': authenticated_user.id
         }
         return Response(data)
