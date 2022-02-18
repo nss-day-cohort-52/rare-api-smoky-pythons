@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from rareapi.models.subscription import Subscription
 
 class RareUser(models.Model):
     bio = models.CharField(max_length=200)
@@ -17,3 +17,9 @@ class RareUser(models.Model):
     @is_followed.setter
     def is_followed(self, value):
         self.__is_followed = value
+        
+    @property
+    def subscriber_count(self):
+        subs = Subscription.objects.filter(author=self)
+        count = len(subs)
+        return count

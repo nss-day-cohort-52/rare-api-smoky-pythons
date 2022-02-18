@@ -70,5 +70,10 @@ def register_user(request):
     # Use the REST Framework's token generator on the new user account
     token = Token.objects.create(user=rare_user.user)
     # Return the token to the client
-    data = {'token': token.key, 'userId': rare_user.user.id}
+    data = {
+            'valid': True,
+            'token': token.key,
+            "is_staff": False,
+            'userId': rare_user.id
+        }
     return Response(data)
