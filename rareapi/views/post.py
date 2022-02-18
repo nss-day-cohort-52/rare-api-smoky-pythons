@@ -28,8 +28,9 @@ class PostView(ViewSet):
         return Response(serializer.data)
 
     def retrieve(self, request, pk):
+        user = RareUser.objects.get(user=request.auth.user)
         post = Post.objects.get(pk=pk)
-        post.is_owner = post.user == request.auth.user
+        post.is_owner = post.user == user
         serializer = GetPostSerializer(post)
         return Response(serializer.data)
 

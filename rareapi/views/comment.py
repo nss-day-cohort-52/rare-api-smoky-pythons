@@ -10,8 +10,13 @@ from rareapi.models import Comment, Post, RareUser
 class CommentView(ViewSet):
     # match pk that comes from url
     def retrieve(self, request, pk):
+        author = RareUser.objects.get(user=request.auth.user)
         try:
             comment = Comment.objects.get(pk=pk)
+            if comment.author == author:
+                comment.is_owner = True
+            else:
+                comment.is_owner = False
             serializer = GetCommentSerializer(comment)
             return Response(serializer.data)
         except Comment.DoesNotExist as ex:
