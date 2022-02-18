@@ -10,8 +10,13 @@ from rareapi.models import Comment, Post, RareUser
 class CommentView(ViewSet):
     # match pk that comes from url
     def retrieve(self, request, pk):
+        author = RareUser.objects.get(user=request.auth.user)
         try:
             comment = Comment.objects.get(pk=pk)
+            if comment.author == author:
+                comment.is_owner = True
+            else:
+                comment.is_owner = False
             serializer = GetCommentSerializer(comment)
             return Response(serializer.data)
         except Comment.DoesNotExist as ex:
@@ -19,6 +24,12 @@ class CommentView(ViewSet):
 
     def list(self, request):
         comments = Comment.objects.all()
+        author = RareUser.objects.get(user=request.auth.user)
+        for comment in comments:
+            if comment.author == author:
+                comment.is_owner = True
+            else:
+                comment.is_owner = False
 
         serializer = GetCommentSerializer(comments, many=True)
         return Response(serializer.data)
@@ -47,7 +58,7 @@ class CommentView(ViewSet):
 class GetCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = '__all__'
+        fields = ('id', 'content', 'created_on', 'post', 'author', 'is_owner')
         depth = 2
 
 

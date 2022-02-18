@@ -1,1 +1,2 @@
-delete from auth_user
+SELECT * FROM rareapi_comment
+DELETE FROM rareapi_subscription

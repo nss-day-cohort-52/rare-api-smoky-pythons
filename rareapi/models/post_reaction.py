@@ -1,4 +1,3 @@
-from posixpath import realpath
 from django.db import models
 
 class PostReaction(models.Model):

@@ -11,8 +11,8 @@ class Post(models.Model):
         'Category', on_delete=models.CASCADE, related_name='post_category')
     title = models.CharField(max_length=120)
     publication_date = models.DateField(auto_now_add=True)
-    image_url = models.URLField(blank=True, max_length=500)
-    content = models.CharField(max_length=10000)
+    image_url = models.URLField(max_length=1000, blank=True)
+    content = models.CharField(max_length=5000)
     approved = models.BooleanField(default=False)
     tags = models.ManyToManyField(
         "Tag", through="PostTag", related_name="tags")
@@ -24,6 +24,14 @@ class Post(models.Model):
     @is_owner.setter
     def is_owner(self, value):
         self.__is_owner = value
+
+    @property
+    def subscribed(self):
+        return self.__subscribed
+
+    @subscribed.setter
+    def subscribed(self, value):
+        self.__subscribed = value
         
     @property   
     def reactions(self):

@@ -7,23 +7,30 @@ from rest_framework.response import Response
 from rest_framework import status, serializers
 from rest_framework.serializers import ModelSerializer
 from rareapi.models import Post, RareUser, Tag, Category
+from rareapi.models.subscription import Subscription
 from rest_framework.decorators import action
-
 
 
 class PostView(ViewSet):
     # Need to add a custom is_owner property to all posts
     def list(self, request):
         posts = Post.objects.all()
+        user = RareUser.objects.get(user=request.auth.user)
         for post in posts:
-            post.is_owner = post.user_id == request.auth.user_id
+            post.is_owner = post.user == user
+            try:
+                Subscription.objects.get(follower_id=user.id, author_id=post.user.id)
+                post.subscribed = True
+            except Subscription.DoesNotExist:
+                post.subscribed = False
 
         serializer = GetPostSerializer(posts, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, pk):
+        user = RareUser.objects.get(user=request.auth.user)
         post = Post.objects.get(pk=pk)
-        post.is_owner = post.user == request.auth.user
+        post.is_owner = post.user == user
         serializer = GetPostSerializer(post)
         return Response(serializer.data)
 
@@ -41,7 +48,7 @@ class PostView(ViewSet):
         post_obj = serializer.save(user=user, category=category)
         post_obj.tags.set(tags)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+
     @action(methods=['post'], detail=True)
     def react(self, request, pk):
         user = RareUser.objects.get(user=request.auth.user)
@@ -54,13 +61,12 @@ class PostView(ViewSet):
         )
         serializer = PostReactionSerializer(post_reaction)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+
     @action(methods=['delete'], detail=True)
     def unreact(self, request, pk):
         post_reaction = PostReaction.objects.get(pk=pk)
         post_reaction.delete()
         return Response(None, status=status.HTTP_204_NO_CONTENT)
-    
 
     def update(self, request, pk):
         tags = []
@@ -91,7 +97,8 @@ class GetPostSerializer(ModelSerializer):
     class Meta:
         model = Post
         fields = ('id', 'user', 'category', 'title', 'publication_date',
-                  'image_url', 'content', 'approved', 'tags', 'is_owner', 'reactions')
+                  'image_url', 'content', 'approved', 'tags', 'is_owner',
+                  'reactions', 'subscribed')
         depth = 2
 
 
@@ -99,10 +106,10 @@ class CreatePostSerializer(ModelSerializer):
     class Meta:
         model = Post
         fields = ('category', 'title', 'image_url', 'content', 'tags')
-        
+
+
 class PostReactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostReaction
         fields = '__all__'
         depth = 1
-
