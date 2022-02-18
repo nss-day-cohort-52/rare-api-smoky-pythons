@@ -9,6 +9,7 @@ from rest_framework.serializers import ModelSerializer
 from rareapi.models import Post, RareUser, Tag, Category
 from rareapi.models.subscription import Subscription
 from rest_framework.decorators import action
+from django.db.models import Q
 
 
 class PostView(ViewSet):
@@ -16,10 +17,16 @@ class PostView(ViewSet):
     def list(self, request):
         posts = Post.objects.all()
         user = RareUser.objects.get(user=request.auth.user)
+        search_text = self.request.query_params.get('q', None)
+        if search_text:
+            posts = Post.objects.filter(
+                Q(title__contains=search_text)
+            )
         for post in posts:
             post.is_owner = post.user == user
             try:
-                Subscription.objects.get(follower_id=user.id, author_id=post.user.id)
+                Subscription.objects.get(
+                    follower_id=user.id, author_id=post.user.id)
                 post.subscribed = True
             except Subscription.DoesNotExist:
                 post.subscribed = False
