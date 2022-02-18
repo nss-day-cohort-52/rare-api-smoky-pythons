@@ -25,7 +25,7 @@ class SubscriptionView(ViewSet):
 
 
     @action(methods=['get'], detail=False)
-    def currentuser(self, request):
+    def usersubs(self, request):
         """Returns all the Subscription objects where the follower"""
         user = RareUser.objects.get(user=request.auth.user)  
         subs = Subscription.objects.filter(follower=user)

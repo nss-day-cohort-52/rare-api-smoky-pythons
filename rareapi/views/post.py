@@ -11,7 +11,6 @@ from rareapi.models.subscription import Subscription
 from rest_framework.decorators import action
 
 
-
 class PostView(ViewSet):
     # Need to add a custom is_owner property to all posts
     def list(self, request):
@@ -19,7 +18,11 @@ class PostView(ViewSet):
         user = RareUser.objects.get(user=request.auth.user)
         for post in posts:
             post.is_owner = post.user == user
-            post.subscribed = post in Subscription.objects.filter(follower=post.user, author=user)
+            try:
+                Subscription.objects.get(follower_id=user.id, author_id=post.user.id)
+                post.subscribed = True
+            except Subscription.DoesNotExist:
+                post.subscribed = False
 
         serializer = GetPostSerializer(posts, many=True)
         return Response(serializer.data)
@@ -44,7 +47,7 @@ class PostView(ViewSet):
         post_obj = serializer.save(user=user, category=category)
         post_obj.tags.set(tags)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+
     @action(methods=['post'], detail=True)
     def react(self, request, pk):
         user = RareUser.objects.get(user=request.auth.user)
@@ -57,13 +60,12 @@ class PostView(ViewSet):
         )
         serializer = PostReactionSerializer(post_reaction)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+
     @action(methods=['delete'], detail=True)
     def unreact(self, request, pk):
         post_reaction = PostReaction.objects.get(pk=pk)
         post_reaction.delete()
         return Response(None, status=status.HTTP_204_NO_CONTENT)
-    
 
     def update(self, request, pk):
         tags = []
@@ -94,7 +96,7 @@ class GetPostSerializer(ModelSerializer):
     class Meta:
         model = Post
         fields = ('id', 'user', 'category', 'title', 'publication_date',
-                  'image_url', 'content', 'approved', 'tags', 'is_owner', 
+                  'image_url', 'content', 'approved', 'tags', 'is_owner',
                   'reactions', 'subscribed')
         depth = 2
 
@@ -103,10 +105,10 @@ class CreatePostSerializer(ModelSerializer):
     class Meta:
         model = Post
         fields = ('category', 'title', 'image_url', 'content', 'tags')
-        
+
+
 class PostReactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostReaction
         fields = '__all__'
         depth = 1
-

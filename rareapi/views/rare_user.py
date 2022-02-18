@@ -14,9 +14,17 @@ class RareUserView(ViewSet):
         return Response(serializer.data)
 
     def retrieve(self, request, pk):
-        rare_user = RareUser.objects.get(user_id=pk)
-        serializer = RareUserSerializer(rare_user)
-        return Response(serializer.data)
+        author = RareUser.objects.get(pk=pk)
+        follower = RareUser.objects.get(user=request.auth.user)
+        try:
+            Subscription.objects.get(follower=follower, author=author)
+            author.is_followed = True
+            serializer = RareUserSerializer(author)
+            return Response(serializer.data)   
+        except Subscription.DoesNotExist:
+            author.is_followed = False
+            serializer = RareUserSerializer(author)
+            return Response(serializer.data)
 
     @action(methods=['get'], detail=False)
     def currentuser(self, request):
@@ -27,8 +35,8 @@ class RareUserView(ViewSet):
 
     @action(methods=['post'], detail=True)
     def subscribe(self, request, pk):
-        author = RareUser.objects.get(user=request.auth.user)
-        follower = RareUser.objects.get(user_id=request.data['follower'])
+        author = RareUser.objects.get(pk=pk)
+        follower = RareUser.objects.get(user=request.auth.user)
         serializer = SubscriptionSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(author=author, follower=follower)
@@ -37,8 +45,10 @@ class RareUserView(ViewSet):
 
     @action(methods=['delete'], detail=True)
     def unsubscribe(self, request, pk):
+        author = RareUser.objects.get(pk=pk)
+        follower = RareUser.objects.get(user=request.auth.user)
         sub_obj = Subscription.objects.get(
-            author_id=pk, follower=request.auth.user)
+            author=author, follower=follower)
         sub_obj.delete()
         return Response(None, status=status.HTTP_204_NO_CONTENT)
 
@@ -46,7 +56,7 @@ class RareUserView(ViewSet):
 class RareUserSerializer(ModelSerializer):
     class Meta:
         model = RareUser
-        fields = "__all__"
+        fields = ('id', "bio", 'is_followed', 'created_on', 'user', 'is_followed')
         depth = 1
 
 
