@@ -17,6 +17,7 @@ class Post(models.Model):
     tags = models.ManyToManyField(
         "Tag", through="PostTag", related_name="tags")
 
+    # property decorator used to determine if the current user owns the post
     @property
     def is_owner(self):
         return self.__is_owner
@@ -25,6 +26,7 @@ class Post(models.Model):
     def is_owner(self, value):
         self.__is_owner = value
 
+    # property decorator used to determine if the current user is subbed to the author of a post
     @property
     def subscribed(self):
         return self.__subscribed
@@ -32,6 +34,15 @@ class Post(models.Model):
     @subscribed.setter
     def subscribed(self, value):
         self.__subscribed = value
+
+    # property decorator used to determine if the current user has reacted to a post
+    @property
+    def reacted(self):
+        return self.__reacted
+
+    @reacted.setter
+    def reacted(self, value):
+        self.__reacted = value
         
     @property   
     def reactions(self):

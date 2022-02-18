@@ -20,7 +20,7 @@ class RareUserView(ViewSet):
             Subscription.objects.get(follower=follower, author=author)
             author.is_followed = True
             serializer = RareUserSerializer(author)
-            return Response(serializer.data)   
+            return Response(serializer.data)
         except Subscription.DoesNotExist:
             author.is_followed = False
             serializer = RareUserSerializer(author)
@@ -56,7 +56,8 @@ class RareUserView(ViewSet):
 class RareUserSerializer(ModelSerializer):
     class Meta:
         model = RareUser
-        fields = ('id', "bio", 'is_followed', 'created_on', 'user', 'is_followed')
+        fields = ('id', "bio", 'is_followed', 'created_on', 'user',
+                  'is_followed', 'subscriber_count')
         depth = 1
 
 
